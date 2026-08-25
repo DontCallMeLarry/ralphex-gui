@@ -1,0 +1,26 @@
+# Dependencies & Build
+node_modules/
+dist/
+web/dist/
+
+# The lockfile is per-machine here. Different npm versions rewrite it on every
+# install, so a tracked one is dirty again the moment you run `npm install` —
+# and the next `git pull` refuses to move. Nothing else consumes this repo.
+package-lock.json
+
+# Terrarium state (local, per-machine)
+data/
+
+# Local Environment & Secrets
+.env
+*.log
+
+# Claude Code per-machine overrides
+.claude/settings.local.json
+
+# Scratch files: plans and working notes
+TEMP-*
+
+# OS Metadata
+.DS_Store
+Thumbs.db

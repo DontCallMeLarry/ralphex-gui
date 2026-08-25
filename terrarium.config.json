@@ -1,0 +1,17 @@
+{
+  "parentDir": "..",
+  "excludeRepos": ["dev-dashboard"],
+  "excludeWorktreePatterns": ["/.claude/worktrees/", "/.ralphex/worktrees/", "/tmp/"],
+  "port": 7855,
+  "autoSync": true,
+  "autoSyncMinutes": 2,
+  "updateCheckHours": 6,
+  "stateFile": "data/state.json",
+  "sproutEnabled": true,
+  "ralphexCommand": "ralphex",
+  "plansDir": "docs/plans",
+  "planModel": "haiku",
+  "taskModel": "haiku",
+  "reviewModel": "haiku",
+  "codeCommand": null
+}

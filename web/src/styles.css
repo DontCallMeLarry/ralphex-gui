@@ -1,0 +1,3060 @@
+/* Terrarium — cozy desktop terrarium.
+   Warm neutral backdrop, moss and fern greens, rounded glass-like cards,
+   gentle depth rather than hard borders. Charming at a glance, invisible
+   in daily use: decoration never at the expense of scanability. */
+
+/* Every colour in the sheet comes from here. Daylight below, lamplight in the
+   block after it — nothing outside these two blocks names a colour, so the
+   terrarium can be re-lit without touching a single rule. */
+:root {
+  color-scheme: light;
+
+  /* surfaces.
+     Anything raised off the page is opaque. It used to be translucent, and
+     the light below is `background-attachment: fixed` — so the white glow at
+     the top of the *viewport* shone through whichever card you happened to
+     scroll under it, and that card alone went bright white. A card's colour
+     can't depend on where it is on screen. Glass is the sheen and the shadow;
+     it was never the transparency. */
+  --paper: #f7f3e9;
+  --paper-2: #fffdf7;
+  --glass: #fffdf7;
+  --sunken: rgba(247, 243, 233, 0.6);
+  --muted-surface: #f5f1e6;
+  --shelf: rgba(233, 227, 214, 0.35);
+  --leaf-1: rgba(247, 243, 233, 0.9);
+  --leaf-2: rgba(240, 233, 218, 0.9);
+
+  /* the light in the glass */
+  --sky: rgba(255, 255, 255, 0.9);
+  --sheen: rgba(255, 255, 255, 0.55);
+  --glow-moss: rgba(123, 168, 111, 0.16);
+  --glow-clay: rgba(196, 121, 79, 0.1);
+  --scrim: rgba(74, 59, 47, 0.34);
+
+  /* ink — secondary text is still text: --ink-soft clears 5:1 on every surface
+     it lands on, and nothing dims it further with opacity. */
+  --soil: #4a3b2f;
+  --bark: #6b5745;
+  --ink: #33291f;
+  --ink-soft: #6f6152;
+  --on-accent: #fff;
+
+  /* the topbar's own ground, since it now floats over scrolling content */
+  --topbar: rgba(247, 243, 233, 0.88);
+
+  /* washes: the backdrop showing through, one step at a time */
+  --wash-1: rgba(107, 87, 69, 0.06);
+  --wash-2: rgba(107, 87, 69, 0.09);
+  --wash-3: rgba(107, 87, 69, 0.13);
+  --line: rgba(107, 87, 69, 0.14);
+  /* the shading under the edge a scrolling list runs beneath */
+  --scroll-edge: rgba(107, 87, 69, 0.3);
+
+  /* growth */
+  --moss: #5c8a52;
+  --moss-deep: #3f6b3a;
+  --fern: #7ba86f;
+  --fern-pale: #e6efe0;
+  --fern-veil: rgba(92, 138, 82, 0.2);
+  /* the third stage: flowering, and the only hue in the sheet that isn't
+     leaf, soil or clay — so "two of three" can't be mistaken for "some" */
+  --blossom-wash: rgba(198, 122, 132, 0.18);
+  --blossom-ink: #93445a;
+  --accent-1: var(--fern);
+  --accent-2: var(--moss);
+  --accent-edge: var(--moss-deep);
+  --accent-line: rgba(92, 138, 82, 0.3);
+  --focus: rgba(92, 138, 82, 0.4);
+
+  /* clay and rust — everything that wants a second look */
+  --clay: #c4794f;
+  --rust: #b4553c;
+  --danger-1: #c9614a;
+  --danger-2: #b4553c;
+  --danger-edge: #9a4630;
+  --danger-ink: #8f3f2c;
+  --danger-line: rgba(180, 85, 60, 0.35);
+  --danger-wash: rgba(180, 85, 60, 0.07);
+  --danger-wash-2: rgba(180, 85, 60, 0.13);
+  --warn-ink: #8f4a25;
+  --warn-line: rgba(180, 85, 60, 0.25);
+  --warn-wash: rgba(196, 121, 79, 0.1);
+  --warn-wash-2: rgba(196, 121, 79, 0.17);
+  --warn-edge: rgba(196, 121, 79, 0.4);
+
+  --shadow-sm: 0 1px 2px rgba(74, 59, 47, 0.06), 0 2px 8px rgba(74, 59, 47, 0.05);
+  --shadow-md: 0 2px 6px rgba(74, 59, 47, 0.08), 0 12px 32px rgba(74, 59, 47, 0.1);
+  --shadow-lift: 0 4px 10px rgba(74, 59, 47, 0.1), 0 20px 48px rgba(74, 59, 47, 0.14);
+
+  /* the glow behind something that is doing a thing. Green while it works,
+     blue while it waits on you, red when it stopped badly — and blue is the
+     one hue in the sheet that is not leaf, soil, clay or blossom, which is the
+     point: "it is waiting for you" must not read as one more shade of plant. */
+  --pulse-grow-lit: rgba(96, 170, 74, 0.62);
+  --pulse-grow-dim: rgba(96, 170, 74, 0.26);
+  --pulse-wait: rgba(62, 118, 180, 0.5);
+  --pulse-stop: rgba(184, 76, 48, 0.52);
+
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+/* Lamplight. Still a warm room — soil and bark rather than the blue-black most
+   dark modes reach for — and the washes flip from ink-over-paper to
+   light-over-dark so every surface keeps lifting off the one beneath it. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --paper: #1a1815;
+  --paper-2: #24211b;
+  /* The same two surfaces the daylight block settles on, composited once here
+     instead of live against whatever the fixed backdrop is doing. */
+  --glass: #25221c;
+  --sunken: rgba(0, 0, 0, 0.22);
+  --muted-surface: #151411;
+  --shelf: rgba(255, 255, 255, 0.035);
+  --leaf-1: rgba(48, 43, 35, 0.9);
+  --leaf-2: rgba(39, 35, 28, 0.9);
+
+  --sky: rgba(255, 255, 255, 0.05);
+  --sheen: rgba(255, 255, 255, 0.05);
+  --glow-moss: rgba(123, 168, 111, 0.11);
+  --glow-clay: rgba(196, 121, 79, 0.08);
+  --scrim: rgba(8, 7, 5, 0.62);
+
+  --soil: #0f0d0b;
+  --bark: #b6a68f;
+  --ink: #ece4d6;
+  --ink-soft: #bdb0a0;
+  --on-accent: #f4f8f1;
+
+  --topbar: rgba(26, 24, 21, 0.88);
+
+  --wash-1: rgba(255, 255, 255, 0.045);
+  --wash-2: rgba(255, 255, 255, 0.075);
+  --wash-3: rgba(255, 255, 255, 0.12);
+  --line: rgba(255, 255, 255, 0.11);
+  --scroll-edge: rgba(0, 0, 0, 0.6);
+
+  --moss: #6b9d5f;
+  /* Deep moss is always the foreground on a pale-moss ground, so at night it is
+     the pale one — the pairing holds, the polarity flips. */
+  --moss-deep: #a9cf9b;
+  --fern: #7ba86f;
+  --fern-pale: rgba(123, 168, 111, 0.16);
+  --fern-veil: rgba(123, 168, 111, 0.22);
+  --blossom-wash: rgba(224, 150, 160, 0.2);
+  --blossom-ink: #e8a3ae;
+  --accent-1: #57804d;
+  --accent-2: #46693e;
+  --accent-edge: #2e4a29;
+  --accent-line: rgba(123, 168, 111, 0.32);
+  --focus: rgba(140, 190, 125, 0.5);
+
+  --clay: #d08d61;
+  --rust: #d5715a;
+  --danger-1: #a8503b;
+  --danger-2: #8f4330;
+  --danger-edge: #6f3927;
+  --danger-ink: #f0a189;
+  --danger-line: rgba(224, 130, 105, 0.35);
+  --danger-wash: rgba(201, 97, 74, 0.13);
+  --danger-wash-2: rgba(201, 97, 74, 0.2);
+  --warn-ink: #e5ab7c;
+  --warn-line: rgba(196, 121, 79, 0.3);
+  --warn-wash: rgba(196, 121, 79, 0.14);
+  --warn-wash-2: rgba(196, 121, 79, 0.2);
+  --warn-edge: rgba(196, 121, 79, 0.45);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.28);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.42), 0 12px 32px rgba(0, 0, 0, 0.4);
+  --shadow-lift: 0 4px 10px rgba(0, 0, 0, 0.45), 0 20px 48px rgba(0, 0, 0, 0.55);
+
+  /* Light in a dark room carries further, so the glows go brighter, not paler. */
+  --pulse-grow-lit: rgba(126, 205, 100, 0.6);
+  --pulse-grow-dim: rgba(126, 205, 100, 0.26);
+  --pulse-wait: rgba(104, 162, 220, 0.55);
+  --pulse-stop: rgba(220, 106, 78, 0.55);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  color: var(--ink);
+  /* The glass of the terrarium: soft light from above, warm soil below. */
+  background:
+    radial-gradient(120% 80% at 50% -10%, var(--sky) 0%, transparent 55%),
+    radial-gradient(80% 60% at 12% 8%, var(--glow-moss) 0%, transparent 60%),
+    radial-gradient(70% 50% at 88% 4%, var(--glow-clay) 0%, transparent 60%),
+    var(--paper);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--wash-2);
+  padding: 0.1em 0.4em;
+  border-radius: 5px;
+  word-break: break-all;
+}
+
+.terrarium {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px 96px;
+}
+
+/* ---- topbar ---- */
+
+/* Sticky, because Refresh and Sprout are exactly what you want after scrolling
+   past the first screenful. It carries its own ground and a hairline so the
+   cards passing under it never read as part of the header. */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 0 -24px 22px;
+  padding: 14px 24px 13px;
+  background: var(--topbar);
+  backdrop-filter: blur(12px) saturate(1.15);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-right: auto;
+  min-width: 0;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-mark {
+  font-size: 38px;
+  line-height: 1;
+  filter: drop-shadow(0 3px 5px var(--scrim));
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 27px;
+  letter-spacing: -0.02em;
+  font-weight: 650;
+}
+
+.tagline {
+  margin: 1px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ---- search, filter, sort ---- */
+
+/* Past a screenful of repos the list stops being scannable, so the way in is
+   a name you half-remember, a stage, or an order. */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+/* The search is the only control left on this row, so it is capped rather than
+   let loose across the full width — a page-wide input reads as a form field,
+   not as a filter you type two letters into. */
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 240px;
+  max-width: 400px;
+  min-width: 0;
+}
+
+.search-icon {
+  position: absolute;
+  left: 11px;
+  font-size: 12px;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.search input {
+  width: 100%;
+  min-width: 0;
+  font: inherit;
+  font-size: 13.5px;
+  padding: 8px 12px 8px 32px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.search input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.toolbar-count {
+  font-size: 12px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ---- theme pill ---- */
+
+/* Small enough to ignore, close enough to reach: three segments and a pebble
+   that slides between them. It sets the light for the whole terrarium, but it
+   is not something anyone came here to press. */
+.theme-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--wash-1);
+}
+
+.theme-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 38px;
+  height: calc(100% - 4px);
+  border-radius: 999px;
+  background: var(--paper-2);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.theme-pill[data-choice='dark'] .theme-thumb {
+  transform: translateX(38px);
+}
+
+.theme-pill[data-choice='system'] .theme-thumb {
+  transform: translateX(76px);
+}
+
+/* Big enough to hit without aiming: three 38×32 segments, glyphs to match. */
+.theme-opt {
+  position: relative;
+  width: 38px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+
+.theme-opt:hover {
+  color: var(--ink);
+}
+
+.theme-opt[aria-checked='true'] {
+  color: var(--moss-deep);
+}
+
+.theme-opt svg {
+  display: block;
+  width: 17px;
+  height: 17px;
+}
+
+.theme-opt:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- buttons ---- */
+
+.btn {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 550;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn:focus-visible,
+.linkish:focus-visible,
+.chip.actionable:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.btn.small {
+  font-size: 12.5px;
+  padding: 5px 12px;
+}
+
+.btn.primary {
+  background: linear-gradient(180deg, var(--accent-1) 0%, var(--accent-2) 100%);
+  border-color: var(--accent-edge);
+  color: var(--on-accent);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.16);
+}
+
+.btn.subtle {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink-soft);
+  box-shadow: none;
+}
+
+.btn.subtle:hover:not(:disabled) {
+  background: var(--wash-1);
+  box-shadow: none;
+}
+
+.btn.danger {
+  background: linear-gradient(180deg, var(--danger-1) 0%, var(--danger-2) 100%);
+  border-color: var(--danger-edge);
+  color: var(--on-accent);
+}
+
+.btn.danger-outline {
+  color: var(--rust);
+  border-color: var(--danger-line);
+}
+
+.btn.danger-outline:hover:not(:disabled) {
+  background: var(--danger-wash);
+}
+
+/* ---- notices & empty state ---- */
+
+.notice {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  box-shadow: var(--shadow-sm);
+}
+
+.notice.warn,
+.warn {
+  color: var(--danger-ink);
+}
+
+.notice.warn {
+  background: var(--warn-wash);
+  border-color: var(--warn-line);
+}
+
+/* The self-update banner: one sentence, one button, nothing else. */
+.notice.update-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.muted {
+  color: var(--ink-soft);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 34px 24px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-state h2 {
+  margin: 0 0 5px;
+  font-size: 19px;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+/* ---- the empty shelf ----
+
+   Nothing has been planted, so the page shows the ground it would go in: a
+   tilled field with the furrows running away to a horizon. It is drawn rather
+   than dropped in as a picture, so it costs nothing and follows the corner
+   radius. Small, too — an empty state that fills the screen is a page shouting
+   that it has nothing to say. */
+
+.empty-state.field {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 44px 24px 50px;
+  border-color: rgba(63, 38, 18, 0.55);
+  color: #f8f1e5;
+  text-shadow: 0 1px 2px rgba(48, 26, 10, 0.55);
+  background:
+    radial-gradient(80% 120% at 50% 0%, rgba(255, 233, 197, 0.22), transparent 55%),
+    linear-gradient(180deg, #a87f57 0%, #8a5c39 30%, #5d3a20 100%);
+}
+
+/* The rows. Far ones tight and hazy near the horizon, near ones wide and deep
+   underfoot — two masked layers, which from up here is all perspective is. The
+   cross-hatch is what stops even rows reading as decking: earth is broken, not
+   planed. */
+.empty-state.field::before,
+.empty-state.field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.empty-state.field::before {
+  background:
+    repeating-linear-gradient(93deg, rgba(46, 26, 10, 0.16) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(
+      180deg,
+      rgba(58, 33, 15, 0.42) 0 1px,
+      rgba(255, 231, 196, 0.09) 1px 2px,
+      transparent 2px 6px
+    );
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 54%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 54%);
+}
+
+.empty-state.field::after {
+  background:
+    radial-gradient(130% 90% at 50% 122%, rgba(30, 16, 5, 0.62), transparent 66%),
+    repeating-linear-gradient(96deg, rgba(38, 20, 7, 0.26) 0 2px, transparent 2px 15px),
+    repeating-linear-gradient(
+      180deg,
+      rgba(40, 21, 7, 0.6) 0 4px,
+      rgba(255, 226, 186, 0.07) 4px 6px,
+      transparent 6px 19px
+    );
+  -webkit-mask-image: linear-gradient(180deg, transparent 38%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 38%, #000 100%);
+}
+
+/* Light on dark ground, whichever theme the page is in. */
+.empty-state.field h2 {
+  color: inherit;
+}
+
+.empty-state.field p,
+.empty-state.field .muted {
+  color: rgba(255, 246, 234, 0.86);
+}
+
+.empty-state.field strong {
+  color: #fff;
+}
+
+/* ---- repo sections ---- */
+
+.repo-section {
+  margin-bottom: 34px;
+}
+
+/* A ruled header per group: without one, sections run together on scroll. */
+.repo-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.repo-head h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 640;
+  letter-spacing: -0.01em;
+}
+
+/* The whole title is the fold handle — the biggest, most obvious target in
+   the header is the one that hides everything under it, and the count rides
+   along inside it rather than drifting to the far edge of the page. */
+.repo-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  padding: 5px 10px 5px 6px;
+  margin: 0 0 0 -6px;
+  border-radius: 9px;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  min-height: 34px;
+  transition: background 0.12s ease;
+}
+
+.repo-toggle:hover {
+  background: var(--wash-2);
+}
+
+.repo-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.repo-toggle .caret {
+  font-size: 14px;
+  line-height: 1;
+  color: var(--ink);
+  width: 13px;
+  text-align: center;
+  transition: transform 0.15s ease;
+}
+
+.repo-toggle .caret.shut {
+  transform: rotate(-90deg);
+}
+
+.repo-name {
+  overflow-wrap: anywhere;
+}
+
+.repo-section.collapsed .repo-head {
+  margin-bottom: 0;
+}
+
+.repo-section.collapsed,
+.repo-section.bare {
+  margin-bottom: 14px;
+}
+
+.repo-section.bare .repo-head {
+  margin-bottom: 0;
+}
+
+/* Sits on the header's own line: an empty repo is one line, not a section. */
+.repo-empty {
+  font-size: 12.5px;
+}
+
+/* A button that reads as prose — for offers made inside a sentence. */
+.linkish {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--moss-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+/* Sits with the name it counts, not at the other end of the container. */
+.repo-count {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--wash-2);
+  border-radius: 999px;
+  padding: 2px 8px;
+  line-height: 1.5;
+}
+
+.chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--fern-pale);
+  color: var(--moss-deep);
+  white-space: nowrap;
+}
+
+.chip.subtle-chip {
+  background: var(--wash-2);
+  color: var(--ink-soft);
+}
+
+.error-chip {
+  background: var(--danger-wash-2);
+  color: var(--danger-ink);
+}
+
+/* Something worth a glance but nothing broken — a default branch Terrarium
+   couldn't bring up to date on its own. */
+.warn-chip {
+  background: var(--warn-wash-2);
+  color: var(--warn-ink);
+  font-weight: 550;
+  cursor: help;
+}
+
+/* A chip you can press. Warnings that only describe a problem are a dead end;
+   these open the dialog that resolves it. */
+.chip.actionable {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  transition: filter 0.12s ease, transform 0.12s ease;
+}
+
+.chip.actionable:hover {
+  filter: brightness(0.96);
+  transform: translateY(-1px);
+}
+
+/* ---- the back shelf: tucked-away specimens ---- */
+
+/* Tucked specimens stay with their repo, in a dashed tray under the grid —
+   character first, name barely there, out of the way but never out of sight. */
+.tucked-shelf {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 12px;
+  padding: 10px 14px 10px 12px;
+  border-radius: var(--radius);
+  border: 1px dashed var(--line);
+  background: var(--shelf);
+}
+
+.shelf-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  opacity: 0.7;
+}
+
+.tucked {
+  position: relative; /* anchors the raised-hand badge */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 106px;
+  padding: 8px 6px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--glass);
+  background-image: linear-gradient(180deg, var(--sheen) 0%, transparent 55%);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tucked:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.tucked:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.tucked.stage-ready {
+  border-color: var(--warn-edge);
+}
+
+.tucked.removed {
+  opacity: 0.72;
+}
+
+.tucked-name {
+  font-size: 10px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--ink-soft);
+  max-width: 100%;
+  /* Two lines, then ellipsis: enough to tell them apart, never enough to shout. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* ---- repo sync dialog ---- */
+
+.dialog.wide {
+  max-width: 780px;
+  width: 100%;
+}
+
+.sync-summary {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 4px 0 10px;
+}
+
+.commit-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 12px 0;
+}
+
+@media (max-width: 720px) {
+  .commit-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.commit-column {
+  background: var(--wash-1);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-width: 0;
+}
+
+.commit-column-title {
+  font-size: 12px;
+  font-weight: 640;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.commit-column ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.commit-column li {
+  font-size: 12.5px;
+  padding: 3px 0;
+  overflow-wrap: anywhere;
+}
+
+.commit-column code {
+  color: var(--ink-soft);
+}
+
+.backups {
+  font-size: 12.5px;
+  margin: 6px 0 2px;
+}
+
+.backups summary {
+  cursor: pointer;
+  color: var(--ink-soft);
+}
+
+.backups ul {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.backups li {
+  padding: 4px 0;
+  overflow-wrap: anywhere;
+}
+
+.notice.inline {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.dialog-actions.spread {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ---- specimen cards ---- */
+
+/* Columns, not grid rows: a card that grows only pushes the cards below it in
+   its own column. How many columns is measured in CardColumns — the 12px gap
+   here is part of that sum, so the two have to agree. */
+.specimen-grid {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.specimen-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* `0` basis with `min-width: 0`: columns split the row evenly and a long
+     branch name can't push one of them wider than its share. */
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.specimen-card {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px 13px;
+  /* `--lift` is the card's own depth. The shadow itself is composed in the
+     glow section below, out of this and whatever is happening in the card. */
+  --lift: var(--shadow-sm);
+  /* The glass highlight: a soft sheen across the top of each pane. */
+  background-image: linear-gradient(180deg, var(--sheen) 0%, transparent 42%);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  position: relative;
+  min-width: 0;
+  /* The stage is said once, by the chip. No coloured edge repeating it. */
+}
+
+.specimen-card.removed {
+  background-color: var(--muted-surface);
+}
+
+/* The whole card is the way in to the bench, so it says so under the cursor —
+   except over the things on it that are already something to press. */
+.specimen-card {
+  cursor: pointer;
+}
+
+.specimen-card :is(button, a, input, label, textarea, select, code) {
+  cursor: revert;
+}
+
+/* Nothing inside the card is the door any more, so the card itself takes the
+   focus ring and answers to Enter. */
+.specimen-card:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---- the growth line ----
+   How far the plan has got, along the foot of the card. Half the steps ticked
+   is half the card, and that is the whole of it: no sentence, no count, no row
+   of its own.
+
+   It is not a bar laid on the card — it is the card's own bottom border, drawn
+   thicker and green for as far as the work has got. So it sits over the border
+   rather than inside it (hence the negative inset, which reaches out past the
+   padding box to the border box), and it is 3px rather than 6: a hairline with
+   some weight behind it, not a strip of furniture.
+
+   Which is why the track is the whole card and not a strip along the bottom of
+   it. A 3px-tall box cannot hold a 16px corner — CSS shrinks a radius to fit
+   the box it is on, so a strip took a 3px curve and the green ran out past the
+   card's own, squared off in mid-air where the card had already turned. Given
+   the card's box and the card's radius, the clip is the card's corner exactly,
+   and the green disappears into it. Transparent, and no part of the card to
+   click: the line is the card saying something, not something on the card. */
+.growth-track {
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.growth-track > i {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--moss);
+  transition: width 0.4s ease;
+}
+
+.specimen-card:hover {
+  --lift: var(--shadow-md);
+}
+
+/* ---- the glow ----
+   What something is doing, said in a way nobody has to read. A pane with a run
+   in it breathes green; one stopped and waiting on an answer holds a steady
+   blue; one that stopped badly holds a steady red. Three states and no more,
+   because a fourth would need a legend, and a legend is reading.
+
+   Only cards. A modal is already the only thing you are looking at — it does
+   not need a halo to be found, and one behind it makes the page look like it
+   is on fire. The card is where the glow has a job: it is on a shelf with
+   others, and it has to say what it is doing from across the room.
+
+   It is the card's own box-shadow rather than a layer behind it. Depth and
+   glow meet as two custom properties rather than as two rules fighting over
+   `box-shadow`: `--lift` is the card's depth, which changes on hover, and
+   `--glow` is set only while something is happening. Neither has to
+   out-specify the other, because neither is setting the same property. */
+
+.specimen-card {
+  box-shadow: var(--lift), var(--glow, 0 0 #0000);
+}
+
+[data-pulse] {
+  --pulse-lit: var(--pulse-wait);
+  --pulse-dim: var(--pulse-wait);
+  --glow: 0 0 14px -1px var(--pulse-lit), 0 0 40px 8px var(--pulse-lit);
+}
+
+[data-pulse='working'] {
+  --pulse-lit: var(--pulse-grow-lit);
+  --pulse-dim: var(--pulse-grow-dim);
+  animation: breathe 2.6s ease-in-out infinite;
+}
+
+[data-pulse='trouble'] {
+  --pulse-lit: var(--pulse-stop);
+  --pulse-dim: var(--pulse-stop);
+}
+
+/* Out and back, never off: at its dimmest it is still lit, so the pane reads as
+   alive rather than as blinking for attention. An animation outranks any plain
+   declaration, so this is what paints while it runs. */
+@keyframes breathe {
+  0%,
+  100% {
+    box-shadow: var(--lift), 0 0 10px -2px var(--pulse-dim), 0 0 26px 4px var(--pulse-dim);
+  }
+  50% {
+    box-shadow: var(--lift), 0 0 18px 0 var(--pulse-lit), 0 0 48px 12px var(--pulse-lit);
+  }
+}
+
+/* Wraps rather than squeezes: on a narrow card the stage chip drops to its own
+   line instead of eating the name down to three letters. */
+.specimen-main {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* The one secret on the card: pressing the plant opens what the worktree is
+   for. It carries no button chrome at all — that is the point of it being the
+   plant — and says so under the cursor and to a keyboard, nowhere else. */
+.avatar-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.avatar-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* The tile the avatar paints is saturated and opaque, so the ring that defines
+   its edge has to be a darkening rather than the pale hairline that suited the
+   old washed-out backgrounds. */
+.sprout-avatar {
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 30%, var(--paper-2) 0%, var(--fern-pale) 100%);
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.14);
+}
+
+/* One column, read top to bottom: how ripe it is, what it's called, which
+   branch it really is, then everything the outside world knows about it. */
+.specimen-id {
+  min-width: 0;
+  flex: 1 1 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.specimen-name {
+  font-weight: 620;
+  font-size: 14.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* The merge request and its pipeline are one thought — where is this in the
+   world outside? — so they share the top line rather than sitting rows apart.
+   Together on one line, they also stop the pipeline chip from adding a line to
+   some cards and not others, which is what made a shelf of cards look ragged. */
+.specimen-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+/* No merge request means no line: the name simply starts at the top. */
+.specimen-links:empty {
+  display: none;
+}
+
+/* The branch is plumbing: monospaced so it reads as an identifier, and small
+   enough that it never competes with the name above it. */
+.specimen-branch {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 9.5px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.specimen-meta {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 4px 10px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  min-width: 0;
+}
+
+.specimen-meta:empty {
+  display: none;
+}
+
+.specimen-path {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: min(260px, 100%);
+}
+
+.removed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--bark);
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+/* The two links that lead out of the glass — the merge request and its
+   pipeline. Both carry an outward arrow and an outline so neither passes for a
+   static badge; everything else on the card stays inside the terrarium. */
+.mr-link,
+.pipe-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 620;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-line);
+  background: var(--fern-pale);
+  color: var(--moss-deep);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter 0.12s ease, transform 0.12s ease;
+}
+
+.mr-link .external,
+.pipe-link .external {
+  font-size: 9.5px;
+  opacity: 0.8;
+}
+
+.mr-link:hover,
+.pipe-link:hover {
+  filter: brightness(0.94);
+  transform: translateY(-1px);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mr-link:focus-visible,
+.pipe-link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Green while the MR is the live conversation; faded once it's history. */
+.mr-link.mr-merged {
+  background: var(--fern-veil);
+}
+
+.mr-link.mr-draft,
+.mr-link.mr-closed {
+  background: var(--wash-2);
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+/* The pipeline, coloured by what it wants from you. Green needs nothing, red
+   needs a look, grey is dormant — and clay means it is sitting there waiting
+   for a human to press play, which outranks all three. */
+.pipe-link.pipe-bad {
+  background: var(--danger-wash-2);
+  border-color: var(--danger-line);
+  color: var(--danger-ink);
+}
+
+.pipe-link.pipe-busy {
+  background: var(--warn-wash);
+  border-color: var(--warn-line);
+  color: var(--warn-ink);
+}
+
+.pipe-link.pipe-idle {
+  background: var(--wash-2);
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+.pipe-link.pipe-waiting {
+  background: var(--warn-wash-2);
+  border-color: var(--warn-edge);
+  color: var(--warn-ink);
+}
+
+/* The count of unplayed deploys: the one part of the chip that is a to-do. */
+.pipe-link .pipe-count {
+  font-weight: 700;
+  padding-left: 4px;
+  margin-left: 1px;
+  border-left: 1px solid var(--warn-line);
+}
+
+/* The top-right corner: the stage chip, then the boxes that move it along.
+   Right-aligned as a block, so the chip and the checklist share one clean edge
+   against the side of the card. */
+.specimen-corner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  /* Everything in here is deliberately tight: the chip and three boxes have to
+     fit the height the card already had, not push it taller. */
+  gap: 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-left: auto;
+}
+
+/* Flex, not a run of inline text: that's what centres the mark against the
+   word instead of dropping both onto a baseline the emoji overhangs. */
+.stage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9.5px;
+  line-height: 1.4;
+  font-weight: 620;
+  padding: 1px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Emoji carry more ink than letters at the same size, so every mark on a card
+   runs a notch under its own text and is centred against it. */
+.mark {
+  font-size: 0.88em;
+  line-height: 1;
+  font-style: normal;
+}
+
+/* Three quiet boxes under the chip, stacked so the eye reads them as one dial:
+   tick, tick, tick — and the chip above them ripens. Boxes line up on their
+   own left edge; the block as a whole hangs off the card's right edge. */
+.specimen-checks {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.check-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 550;
+  line-height: 1.2;
+  color: var(--ink-soft);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.12s ease;
+}
+
+.check-mini input {
+  accent-color: var(--moss);
+  width: 11px;
+  height: 11px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.check-mini input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.check-mini.checked {
+  color: var(--moss-deep);
+}
+
+/* Production is the one that is live — clay, not moss, when ticked. */
+.check-mini.check-production input {
+  accent-color: var(--clay);
+}
+
+.check-mini.check-production.checked {
+  color: var(--warn-ink);
+}
+
+/* ---- the plant speaking ----
+   Monitoring never ticks a box. When GitLab shows a merge or a deploy the
+   checklist hasn't caught up with, the plant asks — and the human tick,
+   here in the bubble or up in the corner, is what makes it stop. */
+.speech-bubble {
+  position: relative;
+  margin-top: 10px;
+  padding: 6px 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-sm);
+  /* Solid, so the tail can sit over the border without a seam in either theme. */
+  background: color-mix(in srgb, var(--fern) 12%, var(--paper-2));
+  animation: speech-in 0.18s ease-out;
+}
+
+/* The tail, pointing back up at the one doing the talking. */
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 22px;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  background: color-mix(in srgb, var(--fern) 12%, var(--paper-2));
+  border-left: 1px solid var(--accent-line);
+  border-top: 1px solid var(--accent-line);
+}
+
+/* The sentence is written short enough to share the line with the button, so
+   the button is the part that must never break — the text yields first. */
+.speech-tick {
+  font-size: 11.5px;
+  font-weight: 620;
+  padding: 2px 9px;
+  margin-left: auto;
+  color: var(--moss-deep);
+  white-space: nowrap;
+  flex: none;
+}
+
+.speech-text {
+  min-width: 0;
+}
+
+/* The box being asked about, softly lit so the eye lands on it. */
+.check-mini.nudged input {
+  box-shadow: 0 0 0 3px var(--fern-veil);
+  border-radius: 2px;
+}
+
+/* On the shelf there's no room to talk, so a nudged plant raises its hand. */
+.tucked-nudge {
+  position: absolute;
+  top: -7px;
+  right: -6px;
+  font-size: 13px;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.25));
+}
+
+@keyframes speech-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}
+
+.stage-chip-seedling {
+  background: var(--fern-pale);
+  color: var(--moss-deep);
+}
+
+.stage-chip-growing {
+  background: var(--fern-veil);
+  color: var(--moss-deep);
+}
+
+.stage-chip-budding {
+  background: var(--blossom-wash);
+  color: var(--blossom-ink);
+}
+
+.stage-chip-ready {
+  background: var(--warn-wash-2);
+  color: var(--warn-ink);
+}
+
+/* Boxes and buttons on one line: on a wide card there is no dead channel
+   between them, and on a narrow one the row simply wraps. */
+.specimen-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* Every action is the same kind of thing, so every action is the same kind of
+   button: one row, equal widths, one gap between all of them. Prune still reads
+   as the dangerous one — by its colour, and by sitting at the far end. */
+.specimen-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+}
+
+.specimen-actions > .btn,
+.specimen-actions > .action-note {
+  flex: 1 1 0;
+  /* Equal shares of the row, but never narrower than the label itself. */
+  min-width: max-content;
+  text-align: center;
+  /* Smaller than the worktree name above them: these are things you can do to
+     the card, not the thing the card is about. Padding comes down with the
+     type so the buttons stay in proportion instead of turning into slabs. */
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.action-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.notes {
+  width: 100%;
+  margin-top: 10px;
+  font: inherit;
+  font-size: 13px;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  resize: vertical;
+  color: var(--ink);
+}
+
+.notes:focus,
+.field textarea:focus,
+.field select:focus,
+.option-other:focus,
+.sprout-input textarea:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.open-fallback {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--warn-wash);
+  font-size: 12.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: flex-start;
+}
+
+/* ---- overlays & dialogs ---- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 50;
+}
+
+.dialog {
+  background: var(--paper-2);
+  border-radius: 20px;
+  padding: 22px 24px 18px;
+  max-width: 560px;
+  width: 100%;
+  box-shadow: var(--shadow-lift);
+  max-height: 86vh;
+  overflow-y: auto;
+}
+
+.dialog-head {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.dialog-head h3 {
+  margin: 0 0 3px;
+  font-size: 18px;
+}
+
+.dialog-head p {
+  margin: 0;
+  font-size: 13px;
+}
+
+/* The plant's own line IS the prune dialog's title: big, italic and quoted,
+   the specimen talking straight at whoever is holding the shears. */
+.dialog-head .plead {
+  font-size: 19px;
+  font-weight: 570;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ink);
+  align-self: center;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 9px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.prune-facts {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.prune-facts li + li {
+  margin-top: 4px;
+}
+
+/* ---- the plan, read ----
+   What was written at the interview, read at the width prose wants rather
+   than the width a card can spare. Wider than a confirmation, narrower than the
+   sync dialog's two columns of commits. */
+
+.dialog.brief {
+  max-width: 680px;
+}
+
+/* The bench is a column with one scrolling part rather than one long scroll:
+   the plan, the button and the input stay put while what moves moves under
+   them. It is as tall as what is in it and no taller — a short plan and one
+   status line under it should not be handed most of the window to sit in the
+   middle of — and stops at 86vh, where the plan starts scrolling instead. */
+.dialog.bench {
+  max-width: 680px;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  /* The plan is what scrolls. This is the floor under that: squeeze the window
+     down far enough that even a shrunk plan and the buttons will not fit, and
+     the dialog itself scrolls rather than quietly cutting the bottom off. */
+  overflow-y: auto;
+}
+
+.dialog.bench,
+.sprout-panel {
+  box-shadow: var(--shadow-lift);
+}
+
+.dialog.bench > .sprout-transcript,
+.dialog.bench .sprout-transcript {
+  max-height: none;
+}
+
+/* Everything that is not the plan keeps its own size. */
+.dialog.bench > .dialog-head,
+.dialog.bench > .bench-run,
+.dialog.bench > .landed,
+.dialog.bench > .sprout-input {
+  flex: none;
+}
+
+/* The plan gives up room, it never takes it. Stretching to fill the dialog put
+   a three-step plan in a box sized for twenty, and a list with a hand's depth
+   of nothing under it reads as a window onto more — so you reach for a scroll
+   that does not exist because there is nothing below the last line. It is as
+   tall as the steps in it, and shorter than that only when the window is. */
+.dialog.bench > .plan-progress {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* And the status line under it is exactly as tall as it needs to be. */
+.dialog.bench > .sprout-stream {
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+.dialog.bench .brief-body {
+  flex: 0 1 auto;
+  min-height: 120px;
+}
+
+.dialog.bench .dialog-head .btn {
+  margin-left: auto;
+}
+
+.brief-title {
+  min-width: 0;
+}
+
+.brief-title h3 {
+  margin: 0 0 2px;
+  font-size: 18px;
+}
+
+/* The path is plumbing — where to go if you want to edit rather than read. */
+.brief-source {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+/* Sunk into the page like a sheet of paper laid on the dialog, so a long brief
+   scrolls against a fixed head and footer instead of running past them. */
+.brief-body {
+  background: var(--sunken);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  max-height: 58vh;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.62;
+}
+
+/* What a tick did, when it did not do the obvious thing. */
+.brief-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+}
+
+.small {
+  font-size: 12px;
+}
+
+/* ---- archive (pressed-leaf scrapbook) ---- */
+
+.dialog.archive {
+  max-width: 660px;
+}
+
+.archive-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leaf {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  /* Pressed between the pages: faintly aged paper, a slight tilt. */
+  background: linear-gradient(180deg, var(--leaf-1) 0%, var(--leaf-2) 100%);
+  border: 1px solid var(--line);
+}
+
+.leaf .sprout-avatar {
+  filter: saturate(0.62) sepia(0.14);
+  transform: rotate(-3deg);
+}
+
+.leaf-info {
+  min-width: 0;
+}
+
+.leaf-checks {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.mini-check {
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+
+.mini-check.on {
+  color: var(--moss-deep);
+  font-weight: 620;
+}
+
+.leaf-notes {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--bark);
+  font-style: italic;
+  white-space: pre-wrap;
+}
+
+/* ---- sprout flow ---- */
+
+.sprout-overlay {
+  align-items: stretch;
+}
+
+.sprout-panel {
+  background: var(--paper-2);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 860px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  overflow: hidden;
+}
+
+.sprout-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--fern-pale) 0%, transparent 100%);
+  flex-shrink: 0;
+}
+
+.sprout-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.sprout-setup {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.field > span {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.field textarea,
+.field select {
+  width: 100%;
+  font: inherit;
+  font-size: 13.5px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  resize: vertical;
+}
+
+/* ---- the transcript ----
+
+   Every row used to weigh the same: a three-thousand-word plan, the line saying
+   what the turn cost and the twenty tool calls underneath it read as one grey
+   slab, and the short lines that say what happened were lost inside it. Four
+   weights now — what was said, what the turn cost, what the machinery did, and
+   the questions — and a long message stops at a screenful so it can't push the
+   rest of the session out of reach. */
+
+.sprout-stream {
+  position: relative;
+  flex: 1;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sprout-transcript {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---- technical details ----
+   Everything the run printed, one click away and nowhere else. Nobody watching
+   the loop work should have to read a log to find the sentence addressed to
+   them, and nobody debugging it should have to go without one. */
+
+.machinery {
+  flex: none;
+  border-top: 1px solid var(--line);
+  background: var(--wash-1);
+}
+
+.machinery-toggle {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: 11.5px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  padding: 6px 20px;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.machinery-toggle:hover {
+  color: var(--ink);
+}
+
+.machinery-lines {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 0 20px 10px;
+}
+
+/* A message is a page, not a chat bubble: named, on paper, with a rail down the
+   side saying whose it is. */
+.msg {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.msg-who {
+  font-size: 10.5px;
+  font-weight: 680;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-soft);
+}
+
+.msg-body {
+  font-size: 14px;
+  line-height: 1.62;
+  padding: 12px 15px;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--fern);
+}
+
+.msg.mine .msg-body {
+  background: var(--fern-pale);
+  border-left-color: var(--moss-deep);
+}
+
+.msg.error .msg-who {
+  color: var(--danger-ink);
+}
+
+.msg.error .msg-body {
+  background: var(--danger-wash-2);
+  border-left-color: var(--danger-2);
+  color: var(--danger-ink);
+}
+
+/* Clipped rather than scrolled: a scroll box inside a scrolling transcript
+   steals the wheel from it. The button is the way in. */
+.msg-body.clipped {
+  max-height: 360px;
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, #000 290px, transparent 100%);
+}
+
+.msg-more {
+  align-self: flex-start;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--moss-deep);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.markdown > *:first-child {
+  margin-top: 0;
+}
+
+.markdown > *:last-child {
+  margin-bottom: 0;
+}
+
+.markdown p {
+  margin: 0 0 8px;
+}
+
+/* Headings in rendered markdown. The pipeline's documents are structured —
+   a title, "Done means", a references list — and a brief that renders as one
+   grey slab is a brief nobody reads to the end. Sizes step down gently: this
+   is a page inside a dialog, not a page of its own. */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  margin: 16px 0 7px;
+  line-height: 1.3;
+  font-weight: 640;
+  letter-spacing: -0.01em;
+}
+
+.markdown h1 {
+  font-size: 19px;
+}
+
+.markdown h2 {
+  font-size: 15.5px;
+}
+
+.markdown h3,
+.markdown h4 {
+  font-size: 14px;
+  color: var(--bark);
+}
+
+.markdown li {
+  margin-bottom: 3px;
+}
+
+/* GitHub task lists: the brief's "Done means" is a checklist. In the brief the
+   boxes are the control and ticking one writes it back into the file; anywhere
+   else — a sprout transcript — they are a picture of somebody else's list. */
+.markdown li:has(> input[type='checkbox']) {
+  list-style: none;
+  margin-left: -18px;
+}
+
+.markdown li > input[type='checkbox'] {
+  accent-color: var(--moss);
+  margin-right: 6px;
+  pointer-events: none;
+}
+
+.markdown.live-tasks li > input[type='checkbox'] {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.markdown code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.88em;
+  background: var(--wash-2);
+  padding: 1px 5px;
+  border-radius: 5px;
+}
+
+.markdown a {
+  color: var(--moss-deep);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.markdown hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 14px 0;
+}
+
+.markdown table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 0 10px;
+  font-size: 0.94em;
+}
+
+.markdown th,
+.markdown td {
+  border: 1px solid var(--line);
+  padding: 5px 9px;
+  text-align: left;
+}
+
+.markdown th {
+  background: var(--wash-1);
+}
+
+.markdown ul,
+.markdown ol {
+  margin: 0 0 8px;
+  padding-left: 22px;
+}
+
+.markdown pre {
+  background: var(--wash-2);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.markdown pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown blockquote {
+  margin: 0 0 8px;
+  padding-left: 12px;
+  border-left: 3px solid var(--fern);
+  color: var(--bark);
+}
+
+/* One line ralphex printed. It only ever appears under technical details —
+   the flow itself never shows a line of output. */
+.tool-line {
+  display: flex;
+  gap: 7px;
+  min-width: 0;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.tool-name {
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.tool-summary {
+  opacity: 0.8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Session bookkeeping — what the session was told to run, a question laid to
+   rest. Unlike a tool line these must never be clipped: they are the answer to
+   "what just happened?". */
+.notice-line {
+  margin-left: 2px;
+  padding-left: 12px;
+  border-left: 2px solid var(--wash-2);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.notice-line.warn-line {
+  color: var(--danger-ink);
+  border-left-color: var(--warn-line);
+}
+
+/* How it ended, on a rule drawn across the flow. The only one there is: the
+   loop's own stage boundaries are the status line's business now, and a rule
+   per pass would be a log file with a border round each entry. */
+.turn-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2px 0;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.turn-rule::before,
+.turn-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.turn-rule span {
+  flex: 0 1 auto;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.turn-rule.ended {
+  color: var(--moss-deep);
+  font-weight: 600;
+}
+
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* The phase, named outright. Small and set apart, so the sentence beside it
+   stays the sentence and this stays the answer to "what is it even doing". */
+.thinking-phase {
+  flex: none;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--moss-deep);
+  background: var(--fern-pale);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.thinking-what {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The ticker. It counts the loop's times round, which is the loop's business
+   and not the developer's, so it sits at the far end of the line it belongs to
+   and is the quietest thing on the screen that still moves. */
+.pass-tick {
+  flex: none;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  background: var(--wash-1);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.thinking-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.thinking-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--fern);
+  animation: sway 1.15s ease-in-out infinite;
+}
+
+.thinking-dots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.thinking-dots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+@keyframes sway {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The glow still says what is happening; it just stops moving to say it. */
+  [data-pulse='working'] {
+    animation: none;
+  }
+  .thinking-dots i {
+    animation: none;
+  }
+  .speech-bubble {
+    animation: none;
+  }
+  .btn:hover:not(:disabled),
+  .tucked:hover {
+    transform: none;
+  }
+  .theme-thumb {
+    transition: none;
+  }
+}
+
+/* ---- question cards (AskUserQuestion) ---- */
+
+.question-card {
+  background: var(--paper);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius);
+  padding: 15px 16px 13px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Who stopped to ask. Small, above the question, in the voice the rest of the
+   run is narrated in — a question arriving out of a working loop reads as the
+   loop breaking down until it says which part of it wants a word. */
+.question-from {
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+  color: var(--ink-soft);
+  margin-bottom: 7px;
+}
+
+.question + .question {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+}
+
+.question-header {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.question-text {
+  font-size: 14px;
+  font-weight: 570;
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+
+.options {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  margin-bottom: 9px;
+}
+
+.option {
+  text-align: left;
+  font: inherit;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: border-color 0.12s ease, background 0.12s ease, transform 0.12s ease;
+  color: var(--ink);
+}
+
+.option:hover {
+  border-color: var(--fern);
+  transform: translateY(-1px);
+}
+
+.option.selected {
+  background: var(--fern-pale);
+  border-color: var(--moss);
+  box-shadow: inset 0 0 0 1px var(--moss);
+}
+
+.option-label {
+  font-size: 13px;
+  font-weight: 620;
+}
+
+.option-desc {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.option-other {
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--line);
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+/* ---- sprout footer ---- */
+
+.sprout-banner {
+  margin: 0 20px 10px;
+  padding: 9px 13px;
+  border-radius: var(--radius-sm);
+  background: var(--fern-pale);
+  color: var(--moss-deep);
+  font-size: 13px;
+  font-weight: 550;
+  flex-shrink: 0;
+}
+
+/* The out-of-band warnings — a lost feed, a failed scan — share the banners'
+   gutter, and like the banners they keep their height when the panel is full:
+   the transcript is the only part of it that gives ground. */
+.sprout-panel > .warn {
+  margin: 0 20px 10px;
+  font-size: 12.5px;
+  flex-shrink: 0;
+}
+
+/* Same slot, three moods: a worktree is ready, the pipeline stalled, it died. */
+.sprout-banner.quiet {
+  background: var(--sunken);
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.sprout-banner.alarmed {
+  background: var(--danger-wash-2);
+  color: var(--danger-ink);
+}
+
+.sprout-input {
+  border-top: 1px solid var(--line);
+  padding: 12px 20px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-shrink: 0;
+  background: var(--sunken);
+}
+
+.sprout-input textarea {
+  flex: 1;
+  font: inherit;
+  font-size: 13.5px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  resize: vertical;
+  color: var(--ink);
+}
+
+.sprout-input-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.sprout-done {
+  padding: 26px 22px 20px;
+  overflow-y: auto;
+}
+
+.sprout-done h3 {
+  margin: 0 0 16px;
+  font-size: 19px;
+}
+
+.new-specimen {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--fern-pale) 0%, transparent 100%);
+  margin-bottom: 12px;
+}
+
+.new-specimen .sprout-avatar {
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.new-specimen .specimen-name {
+  font-size: 16px;
+  white-space: normal;
+}
+
+.new-specimen .btn {
+  margin-top: 10px;
+}
+
+/* ---- the tending bench ----
+   The plan and one button. Everything else — the transcript, what it spent,
+   what landed — appears only once something has run. */
+
+.plan-progress {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* One quiet line over the steps: what the ticks are worth on the left, the way
+   through to the whole document on the right. No count of steps and no bar —
+   how far a specimen has got is the card's to say, by growing, and it says it
+   on the page you came from. */
+.plan-progress-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12.5px;
+}
+
+.plan-progress-head .plan-read {
+  margin-left: auto;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+/* The plan's own tasks. A finished one is struck through and dimmed rather
+   than removed: the shape of the whole plan is what says how far in you are. */
+.plan-tasks {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+/* A list that runs under the edge of its box has to say so, or it just stops
+   mid-plan and looks finished. The paper-coloured pair scroll with the list and
+   sit over the shading when there is nothing past the edge; scroll, and they
+   slide away and the shading shows. Nothing to scroll, nothing to see.
+
+   The scrollbar is thin but not a hairline — it is the one thing a hand goes
+   looking for, and an overlay scrollbar that only paints while it is moving
+   cannot be what says the list moves. */
+.dialog.bench .plan-tasks {
+  flex: 0 1 auto;
+  min-height: 3.4em;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-edge) transparent;
+  scrollbar-gutter: stable;
+  background:
+    linear-gradient(var(--paper-2) 45%, transparent) top / 100% 22px no-repeat local,
+    linear-gradient(transparent, var(--paper-2) 55%) bottom / 100% 22px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, var(--scroll-edge), transparent) top / 100% 10px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, var(--scroll-edge), transparent) bottom / 100% 10px no-repeat scroll;
+}
+
+.dialog.bench .plan-tasks::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dialog.bench .plan-tasks::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dialog.bench .plan-tasks::-webkit-scrollbar-thumb {
+  background: var(--scroll-edge);
+  border-radius: 4px;
+}
+
+.plan-tasks li {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+}
+
+.plan-tasks li.done .task-text {
+  text-decoration: line-through;
+  color: var(--ink-soft);
+}
+
+.task-count {
+  flex: none;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  min-width: 30px;
+}
+
+/* The gutter keeps its width whether it holds a fraction or a tick, so the
+   descriptions stay on one edge as the plan fills in. */
+.task-count.ticked {
+  color: var(--moss);
+  font-size: 12px;
+}
+
+.task-text {
+  min-width: 0;
+}
+
+.bench-run {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bench-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* The one button that leaves the machine. Not the loud one — the loud one is
+   still "go and read it", because nobody should be sending work off they have
+   not opened — but not a quiet one either: it is the end of the row and the
+   end of the job, and it wears the branch's own green outline to say so. */
+.btn.ready {
+  border-color: var(--accent-edge);
+  color: var(--moss-deep);
+  font-weight: 600;
+}
+
+.btn.ready:hover:not(:disabled) {
+  background: var(--fern-pale);
+}
+
+/* Finished, said in two words at the head of the plan it finished. The steps
+   under it are all struck through, so this is not news — it is the screen
+   agreeing with what the reader can already see, which is what stops them
+   looking for the sentence that says it. */
+.plan-done {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--moss-deep);
+}
+
+/* ---- asking for changes ----
+   Finished work with something wrong in it. The box replaces the row it came
+   from rather than opening under it: what is on screen is the sentence being
+   written, and the buttons that send it. */
+
+.ask-changes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ask-changes textarea {
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.55;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  color: var(--ink);
+  resize: vertical;
+}
+
+.ask-changes textarea:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.ask-changes p {
+  margin: 0;
+}
+
+/* ---- sending it off ----
+   The only dialog in the Terrarium about something other people will see. */
+
+.dialog.send-off {
+  max-width: 520px;
+}
+
+.send-what {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.send-off p {
+  margin: 0 0 10px;
+}
+
+.send-done {
+  font-size: 13.5px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* ---- what landed ----
+   the loop commits and stops. Nothing is pushed, so this is where you find out
+   what there is to read before deciding anything. */
+
+.landed {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+}
+
+.landed-head {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-size: 13.5px;
+}
+
+/* Where the change is waiting and how to get to it. The size of a change is
+   worth a glance; the names of the files in it are not a review, and the only
+   place one can happen is an editor. */
+.landed-note {
+  margin: 7px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* ---- the plan on the table ----
+   The plan is a document, and this is the line that opens it. Its own output
+   is machinery kept out of the flow, so this card is the only place the plan
+   is — which makes it the one thing here that is never folded away. */
+
+.proposal {
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-sm);
+  background: var(--fern-pale);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* On the plan screen the card is not a card sitting above something else — it
+   is the screen. It takes the room the transcript had, and gives ground the
+   same way when the panel runs out of it. */
+.sprout-panel > .proposal {
+  margin: 16px 20px 12px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* The tasks the plan is made of, as a glance. Enough to know its shape without
+   opening it, and the whole document is one button above. */
+.proposal-tasks {
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13.5px;
+}
+
+.proposal-tasks li {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+}
+
+.proposal-tasks .task-steps {
+  margin-left: auto;
+  flex: none;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.proposal-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.proposal-head strong {
+  font-size: 15px;
+}
+
+.proposal-head .linkish {
+  margin-left: auto;
+}
+
+/* Reading the plan is the point of the card, so it gets the room to be read
+   in rather than a porthole onto itself. */
+.proposal .brief-body {
+  max-height: 46vh;
+}
+
+/* ---- what it spent ----
+   A token count is not a thing anyone can feel, and across two models it does
+   not add up to one number either — so the flow carries the price alone, small,
+   at the top. Click it and the tokens behind it are all there. */
+
+.cost-chip {
+  font: inherit;
+  font-size: 12px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  padding: 3px 9px;
+  margin-left: auto;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cost-chip:hover {
+  color: var(--ink);
+  border-color: var(--accent-line);
+}
+
+.sprout-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dialog.cost-dialog {
+  max-width: 460px;
+}
+
+.cost-table {
+  margin: 4px 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cost-caption {
+  font-size: 10.5px;
+  font-weight: 680;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-soft);
+  margin-bottom: 2px;
+}
+
+.cost-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12.5px;
+}
+
+.cost-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cost-tokens {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  color: var(--ink-soft);
+}
+
+.cost-money {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-weight: 600;
+  min-width: 62px;
+  text-align: right;
+}
+
+.tok-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+}
+
+.tok-name {
+  flex: 0 0 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink-soft);
+}
+
+.tokbar-track {
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--wash-1);
+  overflow: hidden;
+}
+
+.tokbar {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--fern);
+}
+
+/* Coloured by which part of the loop spent it, so the shape of a run is
+   readable without reading a single label. */
+.tokbar.tok-review,
+.tokbar.tok-external {
+  background: var(--clay);
+}
+
+.tokbar.tok-finalize {
+  background: var(--moss-deep);
+}
+
+.tok-total {
+  flex: 0 0 52px;
+  text-align: right;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  color: var(--ink-soft);
+}
+
+.tok-cost {
+  flex: 0 0 62px;
+  text-align: right;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  color: var(--ink);
+}
+
+/* ---- the run's own lines ----
+   Machinery, folded. It matters when something went wrong and never before, so
+   an error earns colour and nothing else does. */
+
+.tool-line.line-error .tool-summary {
+  color: var(--danger-ink);
+}
+
+.tool-line.line-warn .tool-summary {
+  color: var(--warn-ink);
+}
+
+/* ---- what has to be installed ---- */
+
+.notice.missing-notice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.tool-check {
+  padding: 11px 0;
+  border-top: 1px solid var(--line);
+}
+
+.tool-check-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 14px;
+}
+
+.tool-check.found .tool-check-head .mark {
+  color: var(--moss);
+}
+
+.tool-check .mark {
+  color: var(--danger-ink);
+}
+
+.tool-check p {
+  margin: 3px 0 0;
+}
+
+.install-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;
+  flex-wrap: wrap;
+}
+
+/* ---- narrow glass ----
+
+   Everything above is written to reflow, but the fixed things — the brand, the
+   dialog gutters, the sprout panel — need telling. Nothing here hides a
+   control; the page gets narrower, not smaller. */
+
+@media (max-width: 860px) {
+  .terrarium {
+    padding: 0 14px 80px;
+  }
+
+  .topbar {
+    margin: 0 -14px 18px;
+    padding: 12px 14px;
+  }
+
+  .brand-mark {
+    font-size: 30px;
+  }
+
+  .brand h1 {
+    font-size: 22px;
+  }
+
+  .overlay {
+    padding: 12px;
+  }
+
+  .dialog {
+    padding: 18px 16px 14px;
+  }
+
+  .sprout-head,
+  .sprout-setup,
+  .sprout-transcript,
+  .sprout-input {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .sprout-banner,
+  .sprout-panel > .warn {
+    margin-left: 14px;
+    margin-right: 14px;
+  }
+}
+
+@media (max-width: 620px) {
+  .tagline {
+    display: none;
+  }
+
+  .brand {
+    margin-right: 0;
+  }
+
+  .topbar-actions {
+    justify-content: flex-start;
+  }
+
+  .repo-empty {
+    margin-left: 0;
+    text-align: left;
+    flex-basis: 100%;
+  }
+
+  .dialog-actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---- after dark ----
+
+   The last few things that can't be settled by swapping a token: the sprout
+   portraits are drawn on pale ground by the avatar library itself, so at night
+   they need turning down rather than re-colouring. */
+
+:root[data-theme='dark'] .sprout-avatar {
+  filter: brightness(0.85) saturate(0.9);
+}
+
+:root[data-theme='dark'] .leaf .sprout-avatar {
+  filter: saturate(0.5) sepia(0.14) brightness(0.78);
+}
+
+/* ---- the foot of the page ----
+
+   Which copy of Terrarium this is. Small, grey and last, because it is only
+   ever wanted when something looks wrong or out of date. */
+
+.version {
+  margin: 40px 0 8px;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  opacity: 0.55;
+  cursor: default;
+}
